@@ -17,8 +17,10 @@ def _():
     import marimo as mo
     from datasets import load_dataset
     import json
+    from pathlib import Path
+    import os
 
-    return json, load_dataset, mo
+    return Path, json, load_dataset, mo, os
 
 
 @app.cell(hide_code=True)
@@ -365,8 +367,19 @@ def _(mo):
 
 
 @app.cell
-def _(load_dataset):
-    tb = load_dataset("harborframework/terminal-bench-2.0")
+def _(Path):
+    tb_path = Path('terminal-bench-2')
+    return (tb_path,)
+
+
+@app.cell
+def _(os, tb_path):
+    [d for d in os.listdir(tb_path) if os.path.isdir(d)]
+    return
+
+
+@app.cell
+def _():
     return
 
 
