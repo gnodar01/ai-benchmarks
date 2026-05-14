@@ -12,30 +12,20 @@ def _(mo):
     return
 
 
-@app.cell
-def _():
-    import marimo as mo
-    from datasets import load_dataset
-    import json
-    from pathlib import Path
-    import os
-    import tomlkit
-    from tomlkit import toml_file
-
-    return Path, json, load_dataset, mo, os, toml_file
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md("""
+    # Agent Benchmarks
+    """)
+    return
 
 
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    # Agent Benchmarks
-
     Most interested in
     * Terminal-Bench (agentic terminal coding)
-      - 2.0
     * SWE-Bench (agentic coding)
-      - Pro
-      - Verified
 
     Other important-seeming ones
     * Humanity's last exam (Multidisciplinary reasoning)
@@ -55,6 +45,19 @@ def _(mo):
     * Memory
     """)
     return
+
+
+@app.cell
+def _():
+    import marimo as mo
+    from datasets import load_dataset
+    import json
+    from pathlib import Path
+    import os
+    import tomlkit
+    from tomlkit import toml_file
+
+    return Path, json, load_dataset, mo, os, toml_file
 
 
 @app.cell(hide_code=True)
@@ -114,9 +117,21 @@ def _(mo):
     2) "Oracle retrieval". Files edited by the reference patch are retrieved. Less realistic since an engineer wouldn't have this information given to them, and limiting since there are other untouched files that are still relevant to understanding the full context of the issue.
 
     In 40% of instances, BM25 retrieves a superset of the oracle files. In almost half of instances, it retrieves none of the oracle files.
+    """)
+    return
 
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
     ### SWE-Bench Variants
+    """)
+    return
 
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
     #### SWE-bench Lite
 
     [SWE-bench lite](https://www.swebench.com/lite.html) is a smaller, carefully selected subset of 300 tasks from the full benchmark. Selected to preserve the distribution and difficulty spectrum of the original benchmark while focusing on more self-contained, functional bug fixes.
@@ -130,7 +145,13 @@ def _(mo):
     * that contain tests with error message checks
 
     Claude-2 resolves a little over 3% of issues.
+    """)
+    return
 
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
     #### SWE-bench Verified
 
     [SWE-bench verified](https://www.swebench.com/verified.html) is a human-filtered subset of 500 instances from SWE-bench in [collab with OpenAI](https://openai.com/index/introducing-swe-bench-verified/). Human annotators reviewed each instance to ensure the problem descriptions are clear, the test patches correct, and the tasks are solvable given the available information.
@@ -140,7 +161,13 @@ def _(mo):
     The verified leaderboard features results from a wide variety of AI coding systems, from simple LM agent loops to RAG systems to multi-rollout and review type systems.
 
     For apples-to-apples comparison of LMs, all LMs use [mini-swe-agent](https://github.com/SWE-agent/mini-swe-agent) in a minimal BASH environment. No tools, no special scaffold structure. Only a simple [ReAct](https://arxiv.org/abs/2210.03629) agent loop.
+    """)
+    return
 
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
     #### SWE-bench Multimodal
 
     [SWE-bench multimodal](https://www.swebench.com/multimodal.html) is an extension to the original benchmark with 517 issues containing visual elements such as:
@@ -150,11 +177,23 @@ def _(mo):
     * Error messages with visual context
 
     Introduced in [SWE-bench Multimodal: Do AI systems generalize to visual software domains](https://arxiv.org/pdf/2410.03859) (Yang et al., 2024), it adds popular user-facing JavaScript repos and issues that contain a visual aspect such as mapping, plotting, or syntax highlighting.
+    """)
+    return
 
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
     #### SWE-bench Multilingual
 
     [SWE-bench multilingual](https://www.swebench.com/multilingual.html) extends SWE-bench to evaluate LMs across 9 programming languages: C (30), C++ (12), Go (42), Java (43), JS/TS (43), PHP (43), Ruby (44), Rust (43). It consists of 300 curated tasks across 42 repos.
+    """)
+    return
 
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
     #### Konwinski Prize
 
     The [Konwinski Prize](https://www.kaggle.com/competitions/konwinski-prize) offered $1 million for the first team that developed an agent that will solves 90% of issues in an independently developed SWE-bench dataset collected after freezing submissions. It is a contamination-free leaderboard where models (likely) could not have been trained on the issues collected. The submission window as Dec 11, 2024 - Mar 12, 2025. The competition ended on July 9, 2025. The [top team](https://www.kaggle.com/competitions/konwinski-prize/writeups/eduardo-rocha-de-andrade-1st-place-solution-write-) trained a model which resolved [8%](https://www.kaggle.com/competitions/konwinski-prize/discussion/609204) of tasks.
@@ -330,13 +369,25 @@ def _(mo):
     Terminal-bench 2.0 contains a diverse range of tasks which are crowd-sourced through open-source contributions. 93 contributors created 229 tasks, of which 89 were selected for inclusion based on the difficulty and quality assessments made by three experienced human reviewers.
 
     Each task has an oracle solution. Task authors proved a guess on how long they think a junior SWE with little familiarity with the topic would take to complete the task, called the "junior time estimate", and how long a domain expert would require, called the "expert time estimate". Authors also reported a high-level category for each task (SWE, Sys Admin, Data Science, Security, Scientific Computing, File Operations, Debugging, Data Processing, Model Training, Mathematics, Machine Learning, Games, Video Processing, Data Querying, Optimization, Personal Assistant).
+    """)
+    return
 
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
     #### Terminus 2
 
     Because Terminal-Bench is an interactive framework, agent and model performance are hard to decouple. Many agent scaffolds have been engineered to accommodate the tendencies of certain models, especially when the model and agent are developed by the same organization. Additionally, despite the name, agents are not explicitly required to use a terminal as their sole tool. Instead, they are free to manipulate the container however they please.
 
     Many agents are installed directly into the container by a package manager and wield tools that are actually executable programs, far more complex than a typical Bash command. To account for the constraints and biases of most agents, and to remain true to the benchmark’s premise, a simple scaffold, Terminus 2, was created to serve as a neutral testbed for comparing model performance. Terminus 2 has a single tool, a headless terminal, and completes tasks using only Bash commands.
+    """)
+    return
 
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
     #### Harbor
 
     Tasks are specified in the [Harbor task format](https://www.harborframework.com/docs/tasks) and are run in the [Harbor harness](https://www.harborframework.com/docs), which supports multiple popular agents like Claude Code, Codex CLI, Mine-SWE-Agent (SWE-bench's agent) and Terminus 2 (Terminal-bench's agent). Terminal-bench is distributed via the [Harbor registry](https://hub.harborframework.com/).
@@ -354,7 +405,13 @@ def _(mo):
     |     test.sh
     |     ...
     ```
+    """)
+    return
 
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
     #### Resuls
 
     At time of publishing, Codex CLI paired with GPT-5.2 achieves the highest average resolution rate of 63%, followed by Terminus 2 with Claude Opus 4.5 and Terminus 2 with Gemini 3 Pro at 58% and 57%, respectively. Proprietary models paired with various agents occupy the top 13 positions in the rankings, with Terminus 2 and Kimi K2 Thinking performing best among the open-weight models, resolving 36% of tasks on average.
@@ -508,14 +565,26 @@ def _():
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    ### Upcoming
+    ### Upcoming Variants
+    """)
+    return
 
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
     #### Terminal-bench 3.0
 
     There is an open call for contributions for [terminal-bench 3.0](https://www.tbench.ai/news/tb3-contribution-call). The goal is to have 100 diverse tasks targeting at most 30% solve rate from the best models at time of release. Broadly they desire tasks that are longer-horizon, need richer environments, and require specialized expertise.
 
     While terminal-bench 2.0 covers SWE, sys-admin, security, and scientific computing; terminal-bench 3.0 is expanding to a wider variety of domains, so long as they are realistic and accomplished via CLI.
+    """)
+    return
 
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
     ### Terminal-bench-science
 
     The goal of [terminal-bench-science](https://www.tbench.ai/news/tb-science-announcement) (TB-science) is to extend into complex real-world computational workflows that natural scientists run in their research labs.
@@ -523,6 +592,14 @@ def _(mo):
     The claim is that current "AI for science" benchmarks test textbook knowledge or abstrac capabilities like hypothesis generation, rather than measuring whether an AI system can execute the end-to-end computational workflows that drive modern research. TB-science plans to port real workflows from leading research labs into executable benchmark tasks, evaluated in containerized environments with determenistic, programmatic verification.
 
     There will be an open contribution call in Q2 2026.
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ## Task Explorer
     """)
     return
 
@@ -602,11 +679,6 @@ def _(benchmark_select, diff_cat_select, instance_idx_select, mo):
 @app.cell
 def _(by_difficulty, diff_cat_select, instance_idx_select, md_gen_fn):
     md_gen_fn(by_difficulty[diff_cat_select.value][instance_idx_select.value])
-    return
-
-
-@app.cell
-def _():
     return
 
 
