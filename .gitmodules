@@ -1,0 +1,3 @@
+[submodule "terminal-bench-2"]
+	path = terminal-bench-2
+	url = git@github.com:harbor-framework/terminal-bench-2.git
