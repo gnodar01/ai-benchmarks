@@ -6,14 +6,6 @@ app = marimo.App(width="medium", layout_file="layouts/explore.grid.json")
 
 @app.cell(hide_code=True)
 def _(mo):
-    mo.md(r"""
- 
-    """)
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
     mo.md("""
     # Agent Benchmarks
     """)
@@ -23,26 +15,19 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    Most interested in
+    Covered here:
     * Terminal-Bench (agentic terminal coding)
     * SWE-Bench (agentic coding)
 
-    Other important-seeming ones
-    * Humanity's last exam (Multidisciplinary reasoning)
-    * OSWorld-Verified (agentic computer use)
-    * ARC-AGI (AGI; Francois Chollet)
-    * CyberGym (cybersecurity vulnerability reproduction)
-    * GPQA Diamond (graduate-level reasoning)
-    * CharXiv Reasoning (visual reasoning)
-    * [GDPval](https://arxiv.org/abs/2510.04374) (economically viable tasks)
-
-    Ones I don't think I've heard about
-    * [LiveBench](https://livebench.ai/)
-
-    Categories
-    * Agent
-    * SWE
-    * Memory
+    Other important/interesting-seeming ones
+    * [Humanity's last exam](https://lastexam.ai/) (AGI; Multidisciplinary reasoning)
+    * [OSWorld](https://os-world.github.io/) / [OSWorld-Verified](https://xlang.ai/blog/osworld-verified) (agentic computer use)
+    * [ARC-AGI-3](https://arcprize.org/arc-agi/3) (AGI; Francois Chollet)
+    * [CyberGym](https://www.cybergym.io/) (cybersecurity)
+    * [GPQA](https://github.com/idavidrein/gpqa/) (graduate-level reasoning)
+    * [CharXiv Reasoning](https://charxiv.github.io/) (multimodal; visual reasoning)
+    * [GDPval](https://openai.com/index/gdpval/) (economically viable tasks)
+    * [LiveBench](https://livebench.ai/) (contamination-free)
     """)
     return
 
@@ -473,7 +458,7 @@ def _(mo, os):
             res += f"## {str(file)}\n\n"
             res += f"\n```\n{file_contents}\n```\n"
         return res
-    
+
 
     def tb_md(instance):
         if instance is None:
@@ -485,7 +470,7 @@ def _(mo, os):
         readme = (task_pth / 'README.md').read_text()
         sol_pth = task_pth / 'solution'
         tst_pth = task_pth / 'tests'
-    
+
         return mo.md(f"""
     # Meta
 
