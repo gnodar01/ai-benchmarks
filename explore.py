@@ -1,7 +1,7 @@
 import marimo
 
 __generated_with = "0.23.6"
-app = marimo.App(width="medium")
+app = marimo.App(width="medium", layout_file="layouts/explore.grid.json")
 
 
 @app.cell(hide_code=True)
@@ -19,8 +19,10 @@ def _():
     import json
     from pathlib import Path
     import os
+    import tomlkit
+    from tomlkit import toml_file
 
-    return Path, json, load_dataset, mo, os
+    return Path, json, load_dataset, mo, os, toml_file
 
 
 @app.cell(hide_code=True)
@@ -180,23 +182,23 @@ def _(sbv):
 
 @app.cell
 def _(sbv):
-    by_difficulty = dict()
+    sb_by_difficulty = dict()
 
     for i in range(len(sbv)):
         cat = sbv[i]['difficulty']
-        if cat in by_difficulty:
-            by_difficulty[cat].append(sbv[i])
+        if cat in sb_by_difficulty:
+            sb_by_difficulty[cat].append(sbv[i])
         else:
             print(f"adding diff level: {cat}")
-            by_difficulty[cat] = [sbv[i]]
+            sb_by_difficulty[cat] = [sbv[i]]
 
-    MED_EASY, MED_HARD, EASY, HARD = tuple(by_difficulty.keys())
-    return EASY, HARD, MED_EASY, MED_HARD, by_difficulty
+    SB_MED_EASY, SB_MED_HARD, SB_EASY, SB_HARD = tuple(sb_by_difficulty.keys())
+    return SB_EASY, SB_HARD, SB_MED_EASY, SB_MED_HARD, sb_by_difficulty
 
 
 @app.cell
-def _(EASY, HARD, MED_EASY, MED_HARD, by_difficulty):
-    len(by_difficulty[EASY]), len(by_difficulty[MED_EASY]), len(by_difficulty[MED_HARD]), len(by_difficulty[HARD])
+def _(SB_EASY, SB_HARD, SB_MED_EASY, SB_MED_HARD, sb_by_difficulty):
+    len(sb_by_difficulty[SB_EASY]), len(sb_by_difficulty[SB_MED_EASY]), len(sb_by_difficulty[SB_MED_HARD]), len(sb_by_difficulty[SB_HARD])
     return
 
 
@@ -215,7 +217,9 @@ def _(json, mo):
         else:
             return s.replace('"', "'")
 
-    def dif_md(instance): 
+    def sb_md(instance):
+        if instance is None:
+            return ""
         return mo.md(
             f"""
     # Meta
@@ -265,30 +269,30 @@ def _(json, mo):
             """
         )
 
-    return (dif_md,)
+    return (sb_md,)
 
 
 @app.cell
-def _(EASY, by_difficulty, dif_md):
-    dif_md(by_difficulty[EASY][0])
+def _():
+    # sb_md(sb_by_difficulty[SB_EASY][0])
     return
 
 
 @app.cell
-def _(MED_EASY, by_difficulty, dif_md):
-    dif_md(by_difficulty[MED_EASY][0])
+def _():
+    # sb_md(sb_by_difficulty[SB_MED_EASY][0])
     return
 
 
 @app.cell
-def _(MED_HARD, by_difficulty, dif_md):
-    dif_md(by_difficulty[MED_HARD][0])
+def _():
+    # sb_md(sb_by_difficulty[SB_MED_HARD][0])
     return
 
 
 @app.cell
-def _(HARD, by_difficulty, dif_md):
-    dif_md(by_difficulty[HARD][0])
+def _():
+    # sb_md(sb_by_difficulty[SB_HARD][0])
     return
 
 
@@ -367,19 +371,137 @@ def _(mo):
 
 
 @app.cell
-def _(Path):
+def _(Path, os, toml_file):
     tb_path = Path('terminal-bench-2')
-    return (tb_path,)
+    task_paths = [Path(tb_path / d) for d in os.listdir(tb_path) if os.path.isdir(tb_path / d)]
+    task_defs = {pth: toml_file.TOMLFile(pth / 'task.toml').read() for pth in task_paths}
+    return (task_defs,)
 
 
 @app.cell
-def _(os, tb_path):
-    [d for d in os.listdir(tb_path) if os.path.isdir(d)]
+def _(task_defs):
+    tb_by_difficulty = dict()
+
+    for k,v in task_defs.items():
+        tb_diff = v['metadata']['difficulty']
+        if tb_diff in tb_by_difficulty:
+            tb_by_difficulty[tb_diff].append({'path': k, 'def': v})
+        else:
+            tb_by_difficulty[tb_diff] = [{'path': k, 'def': v}]
+    return (tb_by_difficulty,)
+
+
+@app.cell
+def _(tb_by_difficulty):
+    TB_HARD, TB_MED, TB_EASY = tuple(tb_by_difficulty.keys())
+    return TB_EASY, TB_HARD, TB_MED
+
+
+@app.cell
+def _(TB_EASY, TB_HARD, TB_MED, tb_by_difficulty):
+    len(tb_by_difficulty[TB_HARD]), len(tb_by_difficulty[TB_MED]), len(tb_by_difficulty[TB_EASY])
+    return
+
+
+@app.cell
+def _(mo, os):
+    def all_files_md(pth, first):
+        res = ""
+        first_contents = (pth / first).read_text()
+        res += f"## {str(first)}\n\n"
+        res += f"```\n{first_contents}\n```\n"
+        rest = [x for x in os.listdir(pth) if x != first and os.path.isfile(x)]
+        for file in rest:
+            file_contents = (pth / file).read_text()
+            res += f"## {str(file)}\n\n"
+            res += f"\n```\n{file_contents}\n```\n"
+        return res
+    
+
+    def tb_md(instance):
+        if instance is None:
+            return ""
+        task_pth = instance['path']
+        task_def = instance['def']
+        task_instructions = (task_pth / 'instruction.md').read_text()
+        env_pth = task_pth / 'environment'
+        readme = (task_pth / 'README.md').read_text()
+        sol_pth = task_pth / 'solution'
+        tst_pth = task_pth / 'tests'
+    
+        return mo.md(f"""
+    # Meta
+
+    Task Name: {task_def['task']['name']}
+
+    Task Description: {task_def['task']['description']}
+
+    Task Keywords:
+    * {'\n* '.join(task_def['task']['keywords'])}
+
+    Category: Difficulty: {task_def['metadata']['category']}
+
+    Difficulty: {task_def['metadata']['difficulty']}
+
+    Expert Time Min Estimate: {task_def['metadata']['expert_time_estimate_min']}
+
+    Junior Time Min Estimate: {task_def['metadata']['junior_time_estimate_min']}
+
+    ---
+
+    # README
+
+    {readme}
+
+    ---
+
+    # Environment
+
+    Files:
+
+    * {'\n* '.join(os.listdir(env_pth))}
+
+    {all_files_md(env_pth, 'Dockerfile')}
+
+    # Instructions
+
+    {task_instructions}
+
+    # Solution
+
+    Files:
+
+    * {'\n* '.join(os.listdir(sol_pth))}
+
+    {all_files_md(sol_pth, 'solve.sh')}
+
+    # Tests
+
+    Files:
+
+    * {'\n* '.join(os.listdir(tst_pth))}
+
+    {all_files_md(tst_pth, 'test.sh')}
+        """)
+
+    return (tb_md,)
+
+
+@app.cell
+def _():
+    # tb_md(tb_by_difficulty[TB_EASY][0])
     return
 
 
 @app.cell
 def _():
+    # tb_md(tb_by_difficulty[TB_MED][0])
+    return
+
+
+@app.cell
+def _():
+    # tb_md(tb_by_difficulty[TB_HARD][0])
     return
 
 
@@ -406,7 +528,80 @@ def _(mo):
 
 
 @app.cell
-def _():
+def _(mo):
+    SB_SELECT = 'SWE-BENCH'
+    TB_SELECT = 'TERMINAL-BENCH'
+
+    benchmark_select = mo.ui.dropdown([SB_SELECT, TB_SELECT])
+    return SB_SELECT, TB_SELECT, benchmark_select
+
+
+@app.cell
+def _(
+    SB_SELECT,
+    TB_SELECT,
+    benchmark_select,
+    mo,
+    sb_by_difficulty,
+    tb_by_difficulty,
+):
+    cats = {
+        SB_SELECT: list(map(str, sb_by_difficulty.keys())),
+        TB_SELECT: list(map(str, tb_by_difficulty.keys())),
+        None: []
+    }[benchmark_select.value]
+
+    diff_cat_select = mo.ui.dropdown(cats)
+    return (diff_cat_select,)
+
+
+@app.cell
+def _(
+    SB_SELECT,
+    TB_SELECT,
+    benchmark_select,
+    sb_by_difficulty,
+    tb_by_difficulty,
+):
+    by_difficulty = {
+        SB_SELECT: dict({None: [None]}, **sb_by_difficulty),
+        TB_SELECT: dict({None: [None]}, **tb_by_difficulty),
+        None: {None: [None]}
+    }[benchmark_select.value]
+    return (by_difficulty,)
+
+
+@app.cell
+def _(by_difficulty, diff_cat_select, mo):
+    instance_idx_select = mo.ui.slider(start=0, stop=len(by_difficulty[diff_cat_select.value]), step=1, debounce=True, show_value=True)
+    return (instance_idx_select,)
+
+
+@app.cell
+def _(SB_SELECT, TB_SELECT, benchmark_select, sb_md, tb_md):
+    md_gen_fn = {
+        SB_SELECT: sb_md,
+        TB_SELECT: tb_md,
+        None: (lambda x: None)
+    }[benchmark_select.value]
+    return (md_gen_fn,)
+
+
+@app.cell
+def _(benchmark_select, diff_cat_select, instance_idx_select, mo):
+    mo.md(f"""
+    Select a Benchmark: {benchmark_select}
+
+    Select a difficulty category: {diff_cat_select}
+
+    Select a task id: {instance_idx_select}
+    """)
+    return
+
+
+@app.cell
+def _(by_difficulty, diff_cat_select, instance_idx_select, md_gen_fn):
+    md_gen_fn(by_difficulty[diff_cat_select.value][instance_idx_select.value])
     return
 
 
