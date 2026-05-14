@@ -16,8 +16,9 @@ def _(mo):
 def _():
     import marimo as mo
     from datasets import load_dataset
+    import json
 
-    return load_dataset, mo
+    return json, load_dataset, mo
 
 
 @app.cell(hide_code=True)
@@ -176,12 +177,6 @@ def _(sbv):
 
 
 @app.cell
-def _():
-    'zfoo' in {'foo': ['a']}
-    return
-
-
-@app.cell
 def _(sbv):
     by_difficulty = dict()
 
@@ -211,20 +206,87 @@ def _(sbv):
 
 
 @app.cell
-def _(EASY, by_difficulty):
-    easy_instance = by_difficulty[EASY][1]
-    return (easy_instance,)
+def _(json, mo):
+    def esc(s, noop=False):
+        if noop:
+            return s
+        else:
+            return s.replace('"', "'")
+
+    def dif_md(instance): 
+        return mo.md(
+            f"""
+    # Meta
+
+    Repo: [{instance['repo']}](https://github.com/{instance['repo']})
+
+    Instance Id: {instance['instance_id']}
+
+    Created at: {instance['created_at']}
+
+    Version: {instance['version']}
+
+    Difficulty: {instance['difficulty']}
+
+    # Tests
+
+    Fail-to-Pass Tests:
+
+    * {'\n* '.join(json.loads(instance['FAIL_TO_PASS']))}
+
+    Num Pass-to-Pass: {len(json.loads(instance['PASS_TO_PASS']))}
+
+    # GH Links
+
+    * [base commit - {instance['base_commit']}](https://github.com/{instance['repo']}/commit/{instance['base_commit']})
+    * [env setup commit - {instance['environment_setup_commit']}](https://github.com/{instance['repo']}/commit/{instance['environment_setup_commit']})
+
+    # Problem Statement
+
+    {instance['problem_statement']}
+
+    # Hints Text
+
+    {instance['hints_text']}
+
+    # Patch
+
+    ```python
+    {'\n'.join(esc(instance['patch']).split('\n')[0:])}
+    ```
+
+    # Test Patch
+
+    ```python
+    {'\n'.join(esc(instance['test_patch']).split('\n')[0:])}
+    ```
+            """
+        )
+
+    return (dif_md,)
 
 
 @app.cell
-def _(easy_instance, mo):
-    mo.md(easy_instance['problem_statement'])
+def _(EASY, by_difficulty, dif_md):
+    dif_md(by_difficulty[EASY][0])
     return
 
 
 @app.cell
-def _(easy_instance, mo):
-    mo.md(easy_instance['hints_text'])
+def _(MED_EASY, by_difficulty, dif_md):
+    dif_md(by_difficulty[MED_EASY][0])
+    return
+
+
+@app.cell
+def _(MED_HARD, by_difficulty, dif_md):
+    dif_md(by_difficulty[MED_HARD][0])
+    return
+
+
+@app.cell
+def _(HARD, by_difficulty, dif_md):
+    dif_md(by_difficulty[HARD][0])
     return
 
 
@@ -273,6 +335,20 @@ def _(mo):
 
     Tasks are specified in the [Harbor task format](https://www.harborframework.com/docs/tasks) and are run in the [Harbor harness](https://www.harborframework.com/docs), which supports multiple popular agents like Claude Code, Codex CLI, Mine-SWE-Agent (SWE-bench's agent) and Terminus 2 (Terminal-bench's agent). Terminal-bench is distributed via the [Harbor registry](https://hub.harborframework.com/).
 
+    ```
+    | instruction.md
+    | task.toml
+    | environment
+    |     Dockerfile
+    |     ...
+    | solution
+    |     solve.sh
+    |     ...
+    | tests
+    |     test.sh
+    |     ...
+    ```
+
     #### Resuls
 
     At time of publishing, Codex CLI paired with GPT-5.2 achieves the highest average resolution rate of 63%, followed by Terminus 2 with Claude Opus 4.5 and Terminus 2 with Gemini 3 Pro at 58% and 57%, respectively. Proprietary models paired with various agents occupy the top 13 positions in the rankings, with Terminus 2 and Kimi K2 Thinking performing best among the open-weight models, resolving 36% of tasks on average.
@@ -285,6 +361,44 @@ def _(mo):
 @app.cell
 def _(mo):
     mo.image('public/terminal-bench_difficulty.png')
+    return
+
+
+@app.cell
+def _(load_dataset):
+    tb = load_dataset("harborframework/terminal-bench-2.0")
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ### Upcoming
+
+    #### Terminal-bench 3.0
+
+    There is an open call for contributions for [terminal-bench 3.0](https://www.tbench.ai/news/tb3-contribution-call). The goal is to have 100 diverse tasks targeting at most 30% solve rate from the best models at time of release. Broadly they desire tasks that are longer-horizon, need richer environments, and require specialized expertise.
+
+    While terminal-bench 2.0 covers SWE, sys-admin, security, and scientific computing; terminal-bench 3.0 is expanding to a wider variety of domains, so long as they are realistic and accomplished via CLI.
+
+    ### Terminal-bench-science
+
+    The goal of [terminal-bench-science](https://www.tbench.ai/news/tb-science-announcement) (TB-science) is to extend into complex real-world computational workflows that natural scientists run in their research labs.
+
+    The claim is that current "AI for science" benchmarks test textbook knowledge or abstrac capabilities like hypothesis generation, rather than measuring whether an AI system can execute the end-to-end computational workflows that drive modern research. TB-science plans to port real workflows from leading research labs into executable benchmark tasks, evaluated in containerized environments with determenistic, programmatic verification.
+
+    There will be an open contribution call in Q2 2026.
+    """)
+    return
+
+
+@app.cell
+def _():
+    return
+
+
+@app.cell
+def _():
     return
 
 
