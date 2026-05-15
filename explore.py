@@ -266,7 +266,7 @@ def _(mo, sbv):
 
     def _():
         num_per_cat = map(
-            lambda c: f"{c.replace('>', '\>')} ({len(sb_by_difficulty[c])})",
+            lambda c: f"{c.replace('>', 'gt ').replace('<', 'lt ')} ({len(sb_by_difficulty[c])})",
             sb_by_difficulty.keys()
         )
         return mo.md(f"Difficulty levels (num instances):{bullets(num_per_cat)}")
@@ -572,7 +572,7 @@ def _(mo, task_defs):
 
     def _():
         num_per_cat = map(
-            lambda c: f"{c.replace('>', '\>')} ({len(tb_by_difficulty[c])})",
+            lambda c: f"{c.replace('>', 'gt ').replace('<', 'lt ')} ({len(tb_by_difficulty[c])})",
             tb_by_difficulty.keys()
         )
         return mo.md(f"Difficulty levels (num instances):{bullets(num_per_cat)}")
