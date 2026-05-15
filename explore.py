@@ -1,7 +1,11 @@
 import marimo
 
 __generated_with = "0.23.6"
-app = marimo.App(width="medium", layout_file="layouts/explore.slides.json")
+app = marimo.App(
+    width="medium",
+    layout_file="layouts/explore.grid.json",
+    auto_download=["html"],
+)
 
 
 @app.cell(hide_code=True)
@@ -34,12 +38,12 @@ def _(mo):
 
 @app.cell
 def _():
-    import marimo as mo
-    from datasets import load_dataset
-    import json
-    from pathlib import Path
     import os
     import tomlkit
+    import json
+    import marimo as mo
+    from datasets import load_dataset
+    from pathlib import Path
     from tomlkit import toml_file
 
     return Path, json, load_dataset, mo, os, toml_file
@@ -342,31 +346,8 @@ def _(json, mo):
             """
         )
 
-    return (sb_md,)
-
-
-@app.cell
-def _():
     # sb_md(sb_by_difficulty[SB_EASY][0])
-    return
-
-
-@app.cell
-def _():
-    # sb_md(sb_by_difficulty[SB_MED_EASY][0])
-    return
-
-
-@app.cell
-def _():
-    # sb_md(sb_by_difficulty[SB_MED_HARD][0])
-    return
-
-
-@app.cell
-def _():
-    # sb_md(sb_by_difficulty[SB_HARD][0])
-    return
+    return (sb_md,)
 
 
 @app.cell(hide_code=True)
@@ -661,25 +642,8 @@ def _(mo, os):
     {all_files_md(tst_pth, 'test.sh')}
         """)
 
-    return (tb_md,)
-
-
-@app.cell
-def _():
     # tb_md(tb_by_difficulty[TB_EASY][0])
-    return
-
-
-@app.cell
-def _():
-    # tb_md(tb_by_difficulty[TB_MED][0])
-    return
-
-
-@app.cell
-def _():
-    # tb_md(tb_by_difficulty[TB_HARD][0])
-    return
+    return (tb_md,)
 
 
 @app.cell(hide_code=True)
