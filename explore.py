@@ -221,6 +221,14 @@ def _(mo):
     return
 
 
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ### SWE-bench Verified Exploration
+    """)
+    return
+
+
 @app.cell
 def _(load_dataset):
     sbv = load_dataset('SWE-bench/SWE-bench_Verified', split='test')
@@ -229,13 +237,17 @@ def _(load_dataset):
 
 @app.cell
 def _(mo, sbv):
-    mo.md(f"There are {sbv.num_rows} task instances")
+    mo.md(f"""
+    There are {sbv.num_rows} task instances
+    """)
     return
 
 
 @app.cell
 def _(mo, sbv):
-    mo.md(f"Each tasks consists of these features:{bullets(map(lambda f: str(f[0]), sbv.features.items()))}")
+    mo.md(f"""
+    Each tasks consists of these features:{bullets(map(lambda f: str(f[0]), sbv.features.items()))}
+    """)
     return
 
 
@@ -264,7 +276,9 @@ def _(mo, sbv):
 
 @app.cell
 def _(mo, sbv):
-    mo.md(f"Repos:{bullets(set([sbv[i]['repo'] for i in range(len(sbv))]))}")
+    mo.md(f"""
+    Repos:{bullets(set([sbv[i]['repo'] for i in range(len(sbv))]))}
+    """)
     return
 
 
@@ -446,7 +460,7 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    #### Selected Resuls
+    #### Selected Results
 
     At time of publishing, Codex CLI paired with GPT-5.2 achieves the highest average resolution rate of 63%, followed by Terminus 2 with Claude Opus 4.5 and Terminus 2 with Gemini 3 Pro at 58% and 57%, respectively.
 
@@ -503,6 +517,14 @@ def _(mo):
     return
 
 
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ### Terminal-bench 2.0 Exploration
+    """)
+    return
+
+
 @app.cell
 def _(Path, os, toml_file):
     tb_path = Path('terminal-bench-2')
@@ -513,19 +535,25 @@ def _(Path, os, toml_file):
 
 @app.cell
 def _(mo, task_defs):
-    mo.md(f"There are {len(task_defs)} task instances")
+    mo.md(f"""
+    There are {len(task_defs)} task instances
+    """)
     return
 
 
 @app.cell
 def _(mo, task_defs):
-    mo.md(f"Unique Tags: {bullets(set([tag for _, v in task_defs.items() for tag in v['metadata']['tags']]))}")
+    mo.md(f"""
+    Unique Tags: {bullets(set([tag for _, v in task_defs.items() for tag in v['metadata']['tags']]))}
+    """)
     return
 
 
 @app.cell
 def _(mo, task_defs):
-    mo.md(f"Unique Keywords: {bullets(set([kwd for _, v in task_defs.items() for kwd in v['task']['keywords']]))}")
+    mo.md(f"""
+    Unique Keywords: {bullets(set([kwd for _, v in task_defs.items() for kwd in v['task']['keywords']]))}
+    """)
     return
 
 
