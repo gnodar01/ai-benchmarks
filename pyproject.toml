@@ -1,7 +1,7 @@
 [project]
 name = "bench-explore"
 version = "0.1.0"
-description = "Add your description here"
+description = "Exploration of SWE-bench and Terminal-bench"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
