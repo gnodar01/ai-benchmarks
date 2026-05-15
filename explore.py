@@ -45,6 +45,12 @@ def _():
     return Path, json, load_dataset, mo, os, toml_file
 
 
+@app.function
+def bullets(itr):
+    """Util for markdown conversion of iterable to list of bullet points"""
+    return f"\n* {'\n* '.join(itr)}"
+
+
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
@@ -222,19 +228,19 @@ def _(load_dataset):
 
 
 @app.cell
-def _(sbv):
-    sbv.num_rows
+def _(mo, sbv):
+    mo.md(f"There are {sbv.num_rows} task instances")
     return
 
 
 @app.cell
-def _(sbv):
-    sbv.features
+def _(mo, sbv):
+    mo.md(f"Each tasks consists of these features:{bullets(map(lambda f: str(f[0]), sbv.features.items()))}")
     return
 
 
 @app.cell
-def _(sbv):
+def _(mo, sbv):
     sb_by_difficulty = dict()
 
     for i in range(len(sbv)):
@@ -242,23 +248,23 @@ def _(sbv):
         if cat in sb_by_difficulty:
             sb_by_difficulty[cat].append(sbv[i])
         else:
-            print(f"adding diff level: {cat}")
             sb_by_difficulty[cat] = [sbv[i]]
 
     SB_MED_EASY, SB_MED_HARD, SB_EASY, SB_HARD = tuple(sb_by_difficulty.keys())
-    return SB_EASY, SB_HARD, SB_MED_EASY, SB_MED_HARD, sb_by_difficulty
+
+    def _():
+        num_per_cat = map(
+            lambda c: f"{c.replace('>', '\>')} ({len(sb_by_difficulty[c])})",
+            sb_by_difficulty.keys()
+        )
+        return mo.md(f"Difficulty levels (num instances):{bullets(num_per_cat)}")
+    _()
+    return (sb_by_difficulty,)
 
 
 @app.cell
-def _(SB_EASY, SB_HARD, SB_MED_EASY, SB_MED_HARD, sb_by_difficulty):
-    len(sb_by_difficulty[SB_EASY]), len(sb_by_difficulty[SB_MED_EASY]), len(sb_by_difficulty[SB_MED_HARD]), len(sb_by_difficulty[SB_HARD])
-    return
-
-
-@app.cell
-def _(sbv):
-    repos = set([sbv[i]['repo'] for i in range(len(sbv))])
-    print('\n'.join(repos))
+def _(mo, sbv):
+    mo.md(f"Repos:{bullets(set([sbv[i]['repo'] for i in range(len(sbv))]))}")
     return
 
 
@@ -291,7 +297,7 @@ def _(json, mo):
 
     Fail-to-Pass Tests:
 
-    * {'\n* '.join(json.loads(instance['FAIL_TO_PASS']))}
+    {bullets(json.loads(instance['FAIL_TO_PASS']))}
 
     Num Pass-to-Pass: {len(json.loads(instance['PASS_TO_PASS']))}
 
@@ -506,7 +512,25 @@ def _(Path, os, toml_file):
 
 
 @app.cell
-def _(task_defs):
+def _(mo, task_defs):
+    mo.md(f"There are {len(task_defs)} task instances")
+    return
+
+
+@app.cell
+def _(mo, task_defs):
+    mo.md(f"Unique Tags: {bullets(set([tag for _, v in task_defs.items() for tag in v['metadata']['tags']]))}")
+    return
+
+
+@app.cell
+def _(mo, task_defs):
+    mo.md(f"Unique Keywords: {bullets(set([kwd for _, v in task_defs.items() for kwd in v['task']['keywords']]))}")
+    return
+
+
+@app.cell
+def _(mo, task_defs):
     tb_by_difficulty = dict()
 
     for k,v in task_defs.items():
@@ -515,19 +539,17 @@ def _(task_defs):
             tb_by_difficulty[tb_diff].append({'path': k, 'def': v})
         else:
             tb_by_difficulty[tb_diff] = [{'path': k, 'def': v}]
-    return (tb_by_difficulty,)
 
-
-@app.cell
-def _(tb_by_difficulty):
     TB_HARD, TB_MED, TB_EASY = tuple(tb_by_difficulty.keys())
-    return TB_EASY, TB_HARD, TB_MED
 
-
-@app.cell
-def _(TB_EASY, TB_HARD, TB_MED, tb_by_difficulty):
-    len(tb_by_difficulty[TB_HARD]), len(tb_by_difficulty[TB_MED]), len(tb_by_difficulty[TB_EASY])
-    return
+    def _():
+        num_per_cat = map(
+            lambda c: f"{c.replace('>', '\>')} ({len(tb_by_difficulty[c])})",
+            tb_by_difficulty.keys()
+        )
+        return mo.md(f"Difficulty levels (num instances):{bullets(num_per_cat)}")
+    _()
+    return (tb_by_difficulty,)
 
 
 @app.cell
@@ -564,7 +586,7 @@ def _(mo, os):
     Task Description: {task_def['task']['description']}
 
     Task Keywords:
-    * {'\n* '.join(task_def['task']['keywords'])}
+    {bullets(task_def['task']['keywords'])}
 
     Category: Difficulty: {task_def['metadata']['category']}
 
