@@ -24,3 +24,12 @@ To clean up afterwards you may want to delete the HuggingSpace-derived SWE-bench
 rm -r ~/.cache/huggingface/datasets/SWE-bench___swe-bench_verified
 ```
 
+## Exploring
+
+The notebook has a generic explorer letting you see tasks from both SWE and Terminal bench, by difficulty.
+
+Either run the notebook and use the widgets at the very bottom, or run in app mode to skip the preamble:
+
+```
+uv run marimo run explore.py
+```

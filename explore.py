@@ -700,7 +700,7 @@ def _(
 
 @app.cell
 def _(by_difficulty, diff_cat_select, mo):
-    instance_idx_select = mo.ui.slider(start=0, stop=len(by_difficulty[diff_cat_select.value]), step=1, debounce=True, show_value=True)
+    instance_idx_select = mo.ui.slider(start=0, stop=len(by_difficulty[diff_cat_select.value])-1, step=1, debounce=True, show_value=True)
     return (instance_idx_select,)
 
 
@@ -729,6 +729,49 @@ def _(benchmark_select, diff_cat_select, instance_idx_select, mo):
 @app.cell
 def _(by_difficulty, diff_cat_select, instance_idx_select, md_gen_fn):
     md_gen_fn(by_difficulty[diff_cat_select.value][instance_idx_select.value])
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    Some interesting examples:
+    * benchmark: SWE-BENCH; difficulty: <15 min fix; task id: 100
+        * ambiguous hint text ("for reasons...")
+        * real fix is "a fair amount of work", but there is an easy patch fix
+        * issue relates problem to environment, but real problem is generic across high-dpi screens
+    * benchmark: SWE-BENCH; difficulty: 15 min - 1 hour; task id: 155
+        * easy fix but requires making a moderate judgement on overall design
+    * benchmark: SWE-BENCH; difficulty: 1 - 4 hours; task id: 26
+        * touches multiple files
+        * has figure in problem statement (but only illustrative not needed)
+    * benchmark: SWE-BENCH; difficulty: >4 hours; task id: 1
+        * sort of unfair as it needs the C/Cpp code to be touched (even though this is not the multilanguage benchmark)
+    * benchmark: SWE-BENCH; difficulty: >4 hours; task id: 2
+        * one file but large patch size
+        * highly mathematical
+        * optimization task
+    * benchmark: TERMINAL-BENCH; difficulty: easy; task id: 1
+        * requires iteratively debugging
+        * has the same time estimate for both junior or expert
+    * benchmark: TERMINAL-BENCH; difficulty: medium; task id: 33
+        * 4x difficulty diff between junior and expert
+        * requires conflict resolution (applying priority rules)
+    * benchmark: TERMINAL-BENCH; difficulty: hard; task id: 6
+        * 7.5x difficulty diff between junior and expert
+        * takes expert 8 hours
+        * low-level programming
+        * image verification
+        * isa code is maximally parallel
+        * related to task 21 (make doom from mips)
+    * benchmark: TERMINAL-BENCH; difficulty: hard; task id: 28
+        * very simple surgical one-liner solution
+        * heavy debugging cycle to find problem
+        * 10x harder for junior
+        * 24 hours for expert
+    * benchmark: TERMINAL-BENCH; difficulty: hard; task id: 29
+        * cell segmentation task (MobileSAM)
+    """)
     return
 
 
