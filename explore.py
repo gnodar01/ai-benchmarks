@@ -35,6 +35,9 @@ def _(mo):
     * [ProgramBench](https://programbench.com/) (free-from, behaviour-oriented)
     * [CodeClash](https://codeclash.ai/) (goal-oriented)
     * [AlgoTune](https://algotune.io/) (numericL optimization)
+    * [Toolathlon](https://github.com/hkust-nlp/Toolathlon) (tool use; long-horizon)
+    * [OpenAI/graphwalks](https://huggingface.co/datasets/openai/graphwalks) (long context)
+    * [MemoryArena](https://memoryarena.github.io/) (memory; multi-session)
     """)
     return
 
