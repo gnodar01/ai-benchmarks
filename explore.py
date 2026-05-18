@@ -32,6 +32,9 @@ def _(mo):
     * [CharXiv Reasoning](https://charxiv.github.io/) (multimodal; visual reasoning)
     * [GDPval](https://openai.com/index/gdpval/) (economically viable tasks)
     * [LiveBench](https://livebench.ai/) (contamination-free)
+    * [ProgramBench](https://programbench.com/) (free-from, behaviour-oriented)
+    * [CodeClash](https://codeclash.ai/) (goal-oriented)
+    * [AlgoTune](https://algotune.io/) (numericL optimization)
     """)
     return
 
@@ -141,6 +144,24 @@ def _(mo):
     2) "Oracle retrieval" - Files edited by the reference patch are retrieved.
 
     Oracle Retrieval is less realistic since an engineer wouldn't have this information given to them, and limiting since there are other untouched files that are still relevant to understanding the full context of the issue.
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    #### Issues
+
+    OpenAI itself acknowledges that SWE-bench Verified [no longer measures frontier coding capabilities](https://openai.com/index/why-we-no-longer-evaluate-swe-bench-verified/).
+
+    * SWE-bench Verified published Aug 2024
+    * Progress slowed due to saturation - do the remaining tasks reflect model or dataset limitations
+    * Tests reject correct solutions - 59.4% of the most unsolved problems reject functionally correct solutions
+    * Contamination - models trained on solutions; all frontier models can exactly reproduce gold patch
+    * Cheating ("reward hacking") - models [can find and have found](https://github.com/SWE-bench/SWE-bench/issues/465) the gold patch by inspecting git commits and via internet searches
+    * Solutions != good code - many solutions [would not be merged](https://metr.org/notes/2026-03-10-many-swe-bench-passing-prs-would-not-be-merged-into-main/)
+    * SWE != python/django
     """)
     return
 
