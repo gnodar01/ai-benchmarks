@@ -252,6 +252,27 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    #### SWE-Bench Pro
+
+    [SWE-bench Pro](https://scaleapi.github.io/SWE-bench_Pro-os/) is a more challenging benchmark that is similar in design to SWE-bench, but for more realistic, complex, enterprise-level and long-horizon tasks.
+
+    [No common authors](https://arxiv.org/abs/2509.16941) of SWE-bench.
+
+    * 1,865 tasks, 41 repos (business applications, B2B services, dev tools)
+      * public set from 11 (GPL-licensed) repos (731 tasks)
+      * held-out set from 12 repos (858 tasks)
+      * commercial set from 18 proprietary repos via partnership agreements (276 tasks)
+    * edits must span multiple files & require "substantial" code change
+    * issues augmented with human-written requirements (synthetically over-specified)
+    * JS, TS, Go, Python
+    * SWE-Agent as scaffold
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
     ### SWE-bench Verified Exploration
     """)
     return
