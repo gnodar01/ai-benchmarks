@@ -32,7 +32,7 @@ def _(mo):
     * [CharXiv Reasoning](https://charxiv.github.io/) (multimodal; visual reasoning)
     * [GDPval](https://openai.com/index/gdpval/) (economically viable tasks)
     * [LiveBench](https://livebench.ai/) (contamination-free)
-    * [ProgramBench](https://programbench.com/) (free-from, behaviour-oriented)
+    * [ProgramBench](https://programbench.com/) (free-form, behaviour-oriented)
     * [CodeClash](https://codeclash.ai/) (goal-oriented)
     * [AlgoTune](https://algotune.io/) (numericL optimization)
     * [Toolathlon](https://github.com/hkust-nlp/Toolathlon) (tool use; long-horizon)
