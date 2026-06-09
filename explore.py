@@ -19,6 +19,16 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
+    Source:
+
+    [github.com/gnodar01/ai-benchmarks](https://github.com/gnodar01/ai-benchmarks)
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
     Covered here:
     * Terminal-Bench (agentic terminal coding)
     * SWE-Bench (agentic coding)
